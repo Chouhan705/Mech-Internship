@@ -1,0 +1,31 @@
+import java.util.*;
+import java.lang.*;
+
+class resultant
+{
+    public static void main(String args[])
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the number of  forces ");
+        int n = sc.nextInt();
+        double f[] = new double[n];
+        double a[] = new double[n];
+        double fx=0.0,fy=0.0;
+        for(int i=0;i<n;i++)
+        {
+            System.out.println("force number "+(i+1));
+            System.out.println("Enter the value of force");
+            f[i] = sc.nextDouble();
+            System.out.println("Enter the value of angle of force witht he positive x axis");
+            a[i] = Math.toRadians(sc.nextDouble());
+            fx += f[i]*Math.cos(a[i]);
+            fy += f[i]*Math.sin(a[i]);
+        }
+        double resf = Math.hypot(fx,fy);
+        double resa = Math.toDegrees(Math.atan(fy/fx));
+        System.out.println(fy);
+        System.out.println(fx);
+        System.out.println("The resultant force is "+resf);
+        System.out.println("The resultant angle is "+resa);
+    }
+}
