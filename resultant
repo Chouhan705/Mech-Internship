@@ -23,8 +23,6 @@ class resultant
         }
         double resf = Math.hypot(fx,fy);
         double resa = Math.toDegrees(Math.atan(fy/fx));
-        System.out.println(fy);
-        System.out.println(fx);
         System.out.println("The resultant force is "+resf);
         System.out.println("The resultant angle is "+resa);
     }
