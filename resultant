@@ -6,6 +6,25 @@ class resultant
     public static void main(String args[])
     {
         Scanner sc = new Scanner(System.in);
+        System.out.println("Choose 1 for basic resultant finding");
+        System.out.println("Choose 2 for finding Unknown force ");
+        int choice = sc.nextInt();
+        switch(choice)
+        {
+            case 1:
+            basicresultant();    
+            break;
+            case 2:
+            unknownforce();
+            break;
+            default:
+            System.out.println("Invalid choice");
+            break;
+        }
+    }
+    public static void basicresultant()
+    {
+        Scanner sc = new Scanner(System.in);
         System.out.println("Enter the number of  forces ");
         int n = sc.nextInt();
         double f[] = new double[n];
@@ -25,5 +44,38 @@ class resultant
         double resa = Math.toDegrees(Math.atan(fy/fx));
         System.out.println("The resultant force is "+resf);
         System.out.println("The resultant angle is "+resa);
+    }
+    public static void unknownforce()
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the number of  forces ");
+        int n = sc.nextInt();
+        double f[] = new double[n];
+        double a[] = new double[n];
+        double fx=0.0,fy=0.0;
+        for(int i=0;i<n;i++)
+        {
+            System.out.println("force number "+(i+1));
+            System.out.println("Enter the value of force");
+            f[i] = sc.nextDouble();
+            System.out.println("Enter the value of angle of force witht he positive x axis");
+            a[i] = Math.toRadians(sc.nextDouble());
+            fx += f[i]*Math.cos(a[i]);
+            fy += f[i]*Math.sin(a[i]);
+        }
+        System.out.println("");
+        System.out.println("Enter the resultant");
+        double resf = sc.nextDouble();
+        System.out.println("Enter the angle of resultant with positive x axis");
+        double resa = Math.toRadians(sc.nextDouble());
+        double resx = resf*Math.cos(resa);
+        double resy = resf*Math.sin(resa);
+        double ufx = resx - fx;
+        double ufy = resy - fy;
+        double uf = Math.hypot(ufx,ufy);
+        double ufa = Math.toDegrees(Math.atan(ufy/ufx));
+        System.out.println("");
+        System.out.println("The unknown force is "+uf);
+        System.out.println("The angle of unknown force is "+ufa);
     }
 }
