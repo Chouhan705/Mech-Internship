@@ -58,7 +58,7 @@ class BasicResultant
             quadrant = sc.nextInt();
             System.out.println("Enter the magnitude of the force") ;
             magnitude[i] = sc.nextDouble() ;
-            System.out.println("If instead of angle there is slope present \nenter S ") ;
+            System.out.println("If instead of angle there is slope present \nenter S \nIf not then enter n ") ;
             slope = sc.next().charAt(0);
             if(slope == 's' || slope == 'S' )
             {
