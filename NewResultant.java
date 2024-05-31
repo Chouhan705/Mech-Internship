@@ -22,12 +22,12 @@ class NewResultant
                 break ;
             case 2:
                 OneUnknownForce ouf = new OneUnknownForce() ;
-                ouf.getUnknownFroce () ;
+                ouf.getOneUnknownFroce () ;
                 break ;
-            /*case 3:
+            case 3:
                 TwoUnknownForce tuf = new TwoUnknownForce() ;
-                tuf.getResultant() ;
-                break ;*/
+                tuf.getTwoUnknownForces() ;
+                break ;
             default:
                 System.out.println("Invalid Choice") ;
                 break ;
@@ -129,7 +129,7 @@ class BasicResultant
 
 class OneUnknownForce
 {
-    void getUnknownFroce()
+    void getOneUnknownFroce()
     {
         Scanner sc = new Scanner(System.in) ;
         System.out.println("Enter the number of forces apart from the unknown force and resultant");
@@ -263,6 +263,10 @@ class OneUnknownForce
         double uFY = resY - fy ;
         double uAngle = Math.toDegrees(Math.atan(uFY/uFX)) ;
         double uMagnitude = Math.hypot(uFX , uFY) ;
+        if(uAngle <0)
+        {
+            uAngle += 180 ;
+        }
 
         System.out.println("The magnitude of the unknown force is :") ;
         System.out.format(".2f" , uMagnitude) ;
