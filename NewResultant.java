@@ -25,9 +25,9 @@ class NewResultant
                 ouf.getOneUnknownFroce () ;
                 break ;
             case 3:
-                TwoUnknownForce tuf = new TwoUnknownForce() ;
+                /*TwoUnknownForce tuf = new TwoUnknownForce() ;
                 tuf.getTwoUnknownForces() ;
-                break ;
+                break ;*/
             default:
                 System.out.println("Invalid Choice") ;
                 break ;
@@ -114,9 +114,9 @@ class BasicResultant
         
         double resultantAngle = Math.toDegrees(Math.atan(fy/fx)) ;
         double resultantMagnitude = Math.hypot(fx , fy) ;
-        if(resultantAngle <0)
+        if ( fx < 0 && fy < 0 )
         {
-            resultantAngle += 180 ;
+            resultantAngle = 0 - resultantAngle ;
         }
     
         System.out.format("The resultant angle is %.2f" , resultantAngle) ;
@@ -263,15 +263,90 @@ class OneUnknownForce
         double uFY = resY - fy ;
         double uAngle = Math.toDegrees(Math.atan(uFY/uFX)) ;
         double uMagnitude = Math.hypot(uFX , uFY) ;
-        if(uAngle <0)
-        {
-            uAngle += 180 ;
-        }
+        
 
         System.out.println("The magnitude of the unknown force is :") ;
-        System.out.format(".2f" , uMagnitude) ;
+        System.out.format("%.2f",uMagnitude) ;
         System.out.println(" The angle of the unknow force is :") ;
-        System.out.format(".2f" , uAngle) ;
+        System.out.format("%.2f",uAngle) ;
+
+
+    }
+}
+
+class TwoUnknownForce
+{
+    void getTwoUnknownForce()
+    {
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("Enter the number of forces apart from the unknown force and resultant");
+        int n = sc.nextInt() ;
+        double[] angle = new double[n] ;
+        double[] magnitude = new double[n] ;
+        int quadrant= 0 ;
+        double fx =0 , fy = 0  ;
+        char slope ;
+        double h =0 , v = 0 ;
+        for(int i = 0 ; i < n ; i++)
+        {
+            System.out.println("Force " + (i+1)) ;
+            System.out.println("Choose the Quadrant the force is present in") ;
+            System.out.println("Either 1, 2, 3 or 4") ;
+            quadrant = sc.nextInt();
+            System.out.println("Enter the magnitude of the force") ;
+            magnitude[i] = sc.nextDouble() ;
+            System.out.println("If instead of angle there is slope present \nenter S \nIf not then enter n ") ;
+            slope = sc.next().charAt(0);
+            if(slope == 's' || slope == 'S' )
+            {
+                System.out.println("Enter the horizontal lenght") ;
+                h=sc.nextDouble();
+                System.out.println("Enter the vertical length") ;
+                v = sc.nextDouble();
+                if( quadrant ==1)
+                {
+                    angle[i] = Math.atan(v/h) ;
+                }
+                if( quadrant ==2)
+                {
+                    angle[i] = Math.PI - Math.atan(v/h) ;
+                }
+                if( quadrant ==3)
+                {
+                    angle[i] = Math.PI + Math.atan(v/h) ;
+                }
+                if( quadrant ==4)
+                {
+                    angle[i] = (2*Math.PI) - Math.atan(v/h) ;
+                }
+                
+            }
+            else
+            {
+                System.out.println("Enter the angle of the force with the respective x axis of the quadrant") ;
+                angle[i] = Math.toRadians(sc.nextDouble()) ;
+            
+                if(quadrant == 1)
+                {
+                    angle[i] = angle[i] ;
+                }
+                if(quadrant == 2)
+                {
+                    angle[i] = (Math.PI) - angle[i] ;
+                }
+                if(quadrant == 3)
+                {
+                    angle[i] = Math.PI + angle[i] ;
+                }
+                if(quadrant == 4)
+                {
+                    angle[i] = (2*Math.PI) - angle[i] ;
+                }
+            }
+
+            fx += (magnitude[i]) * ((Math.cos(angle[i]))) ;
+            fy += (magnitude[i]) * ((Math.sin(angle[i]))) ;
+        }
 
 
     }
