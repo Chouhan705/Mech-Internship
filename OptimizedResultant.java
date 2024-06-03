@@ -7,7 +7,12 @@ class OptimizedResultant
     
     public static void main(String args[])
     {
-        
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("Choose the operation to perform") ;
+        System.out.println("1. Basic Resultant") ;
+        System.out.println("2. One Unknown Foce") ;
+        System.out.println("3. Two Unknown Forces") ;
+        int choice = sc.nextInt() ;
         switch(choice)
         {
             case 1:
