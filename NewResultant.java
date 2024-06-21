@@ -1,6 +1,3 @@
-import java.util.*;
-import java.lang.*;
-import java.text.*;
 
 class NewResultant
 {
