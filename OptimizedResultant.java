@@ -12,6 +12,10 @@ class OptimizedResultant
         System.out.println("1. Basic Resultant") ;
         System.out.println("2. One Unknown Foce") ;
         System.out.println("3. Two Unknown Forces") ;
+        System.out.println("4. Lami");
+        System.out.println("5. Moment of Parallel Force System");
+        System.out.println("6. Moment of General force System on a Beam") ;
+        System.out.println("7. Moment of General force System on a Plane") ;
         int choice = sc.nextInt() ;
         switch(choice)
         {
@@ -23,6 +27,18 @@ class OptimizedResultant
                 break ;
             case 3:
                 getTwoUnknownForces() ;
+                break ;
+            case 4:
+                Lami();
+                break ;
+            case 5:
+                MomentParallel();
+                break ;
+            case 6:
+                MomentBeamGeneral();
+                break ;
+            case 7:
+                MomentGeneralPlane();
                 break ;
             default:
                 System.out.println("Invalid Choice") ;
@@ -77,7 +93,6 @@ class OptimizedResultant
     }
     public static void getTwoUnknownForces()
     {
-        Scanner     sc = new Scanner(System.in);
         double[] Fvalues = InputForce();
         double FX = Fvalues[0] ;
         double FY = Fvalues[1] ;
@@ -86,62 +101,35 @@ class OptimizedResultant
         double ResultantAngle = ResultantValues[1] ;
         double ResultantX = ResultantMagnitude * Math.cos(ResultantAngle) ;
         double ResultantY = ResultantMagnitude * Math.sin(ResultantAngle) ;
+        System.out.println("\033[H\033[2J");
         System.out.println("Enter the information of the unknown forces") ;
-    
-        double[] UnknownForce = new double[2] ;
-        for( int i = 0 ; i < 2 ; i++)
-        {
-            System.out.println("Enter the angle of force" + (i+1));
-            UnknownForce[i] = sc.nextDouble() ;
-        }
-        double UnknownForceAngleA=0 , UnknownForceAngleB=0 ;
-        int counter =0;
-        int axis=0 ;
-        for(int i = 0 ; i< 2 ;i++)
-        {
-            if(UnknownForce[i] == 0 ||  UnknownForce[i] == 180 )
-            {
-                UnknownForceAngleA = Math.toRadians(UnknownForce[i]) ;
-                axis = 1;
-            }
-            if( UnknownForce[i] == 90 || UnknownForce[i] == 270 )
-            {
-                UnknownForceAngleA = Math.toRadians(UnknownForce[i]) ;
-                axis = 2;
-            }
-            else
-            {
-                UnknownForceAngleB = Math.toRadians(UnknownForce[i]) ;
-                counter++;
-            }
-        }
-        if (counter > 2)
-        {
-            System.out.println("Cannot calculate for this specific case") ;
-        }
-        else
-        {
-            if ( axis ==1 )
-            {
-                double UnknownForceB = (ResultantY - FY)/Math.sin(UnknownForceAngleB) ;
-                double UnknownForceA = (ResultantX - (FX+UnknownForceB*Math.cos(UnknownForceAngleB)))/Math.cos(UnknownForceAngleA) ;
-                System.out.println("The unknown forces are :");
-                System.out.format("Force A : %.2f" , UnknownForceA ,"with angle %.2f ", UnknownForceAngleA);
-                System.out.format("Force B : %.2f" , UnknownForceB, "with angle %.2f ", UnknownForceAngleB);
-            }
-            if ( axis == 2)
+        System.out.println("FORCE 1");
+        int Quadrant1 = InputQuadrant();
+        double angle1 = InputAngle(Quadrant1);
+        System.out.println("\033[H\033[2J");
+        System.out.println("FORCE 2");
+        int Quadrant2 = InputQuadrant();
+        double angle2 = InputAngle(Quadrant2);
+        double CoefX1 = Math.cos(angle1);
+        double CoefY1 = Math.cos(angle2);
+        double CoefX2 = Math.sin(angle1);
+        double CoefY2 = Math.sin(angle2);
+        double Const1 = ResultantX - FX;
+        double Const2 = ResultantY - FY;
+        double[] SimulSolution = SimultaneusEqnSolver(CoefX1, CoefY1, Const1, CoefX2, CoefY2, Const2);
+        double UnknownForce1 = SimulSolution[0];
+        double UnknownForce2 = SimulSolution[1];
 
-            {
-                double UnknownForceB = (ResultantX - FX)/Math.cos(UnknownForceAngleB) ;
-                double UnknownForceA = (ResultantY - (FY+UnknownForceB*Math.sin(UnknownForceAngleB)))/Math.sin(UnknownForceAngleA) ;
-                System.out.println("The unknown forces are :");
-                System.out.format("Force A : %.2f " , UnknownForceA ) ;
-                System.out.format("with angle %.2f ", Math.toDegrees(UnknownForceAngleA)) ;
-                System.out.println("") ;
-                System.out.format("Force B : %.2f " , UnknownForceB );
-                System.out.format("with angle %.2f ", Math.toDegrees(UnknownForceAngleB));
-            }
-        }
+        System.out.println("\033[H\033[2J");
+        System.out.println("The value of Unknown Force 1 is :");
+        System.out.format("%.2f" , UnknownForce1);
+        System.out.println();
+        System.out.println("With angle : "+ Math.round(Math.toDegrees(angle1))+" From positive X-Axis");
+        System.out.println();
+        System.out.println("The value of Unknown Force 2 is :");
+        System.out.format("%.2f" , UnknownForce2);
+        System.out.println();
+        System.out.println("With angle : "+ Math.round(Math.toDegrees(angle2))+" From positive X-Axis");
 
     }
     public static double[] InputForce()
@@ -151,7 +139,6 @@ class OptimizedResultant
         System.out.println("\033[H\033[2J");
         System.out.println("Enter the number of known forces :");
         int n = sc.nextInt() ;
-        int[] forces = new int[n];
         double FX=0 , FY=0 ;
         double angle =0 ;
         for( int i = 0 ; i < n ; i++)
@@ -198,6 +185,7 @@ class OptimizedResultant
         System.out.println("4. Quadrant 4") ;
         int quadrant = sc.nextInt() ;
         return quadrant ;
+
     }
     public static double InputMagnitude()
     {
@@ -240,7 +228,7 @@ class OptimizedResultant
         double angle = Math.atan(vertical/horizontal) ;
         if(quadrant == 1)
         {
-            angle = (angle) ;
+            //angle = (angle) ;
         }
         if(quadrant == 2)
         {
@@ -287,6 +275,7 @@ class OptimizedResultant
         double[] ResultantValues = new double[2];
         ResultantValues[0] = ResultantMagnitude ;
         ResultantValues[1] = ResultantAngle ;
+
         return ResultantValues ;
     }
     public static double CalcFX(double magnitude , double angle)
@@ -298,6 +287,196 @@ class OptimizedResultant
     {
         double FY = magnitude*Math.sin(angle);
         return FY ;
-    }    
+    }   
+    
+    public static double[] SimultaneusEqnSolver(double CoefX1 , double CoefY1 , double Const1 , double CoefX2 , double CoefY2 , double Const2)
+    {
+        //Coefx1(x) + Coefy1(y) = Const1
+        //Coefx2(x) + Coefy2(y) = Const2
+        double[] ResultantValues = new double[2];
+        double x = (Const1*CoefY2 - Const2*CoefY1)/(CoefX1*CoefY2 - CoefX2*CoefY1);
+        double y = (Const1*CoefX2 - Const2*CoefX1)/(CoefX2*CoefY1 - CoefX1*CoefY2);
+        ResultantValues[0] = x ;
+        ResultantValues[1] = y ;
+        return ResultantValues ;
+    }
+    public static void Lami()
+    {
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Enter the Magnitude of the known force");
+        double  knownForceMagnitude = sc.nextDouble();
+        System.out.println("Enter the Angle opposite to the known force");
+        double  knownForceAngle = Math.toRadians(sc.nextDouble());
+        System.out.println("Enter the Angle opposite to the unknown force 1");
+        double  unknownAngle1 = Math.toRadians(sc.nextDouble());
+        System.out.println("Enter the Angle opposite to the unknown force 2");
+        double unknownAngle2 = Math.toRadians(sc.nextDouble());
+        if(knownForceAngle+unknownAngle1+unknownAngle2!= (2*Math.PI))
+        {
+            System.out.println("The sum of the angles is not equal to 360 degrees");
+            System.out.println("Re-check the angles entered");
+            return ;
+        }
+        double unknownForce1Magnitude = (knownForceMagnitude*Math.sin(unknownAngle1))/Math.sin(knownForceAngle);
+        double unknownForce2Magnitude = (knownForceMagnitude*Math.sin(unknownAngle2))/Math.sin(knownForceAngle);
+        System.out.println("The unknown force 1 is :");
+        System.out.format("%.2f", unknownForce1Magnitude);
+        System.out.println("");
+        System.out.println("The unknown force 2 is :");
+        System.out.format("%.2f", unknownForce2Magnitude);
 
+    }
+    public static void MomentGeneralPlane()
+    {
+
+    }
+    public static void MomentParallel()
+    {
+        Scanner sc = new Scanner(System.in);
+        double[] Finalvalues = InputMoment();
+        double FY = Finalvalues[1];
+        double MomentDueToForce = Finalvalues[2];
+        System.out.println("\033[H\033[2J");
+        System.out.print("Enter 1 if extra moments are present else enter 0: ");
+        int e = sc.nextInt();
+        double ExtraMoment = 0 ;
+        if (e == 1) 
+        {
+            ExtraMoment = InputExtraMoments();
+        }
+
+        double TotalMoment = MomentDueToForce + ExtraMoment ;
+
+        System.out.printf("Resultant force is %.2f\n", FY);
+        System.out.printf("Total moment is %.2f\n", TotalMoment);
+
+        if (FY == 0) {
+            System.out.println("No force is present, only moment is there");
+        } else {
+            System.out.printf("Distance of the force from reference point is %.2f\n", TotalMoment / FY);
+        }
+
+    }
+    public static void MomentBeamGeneral()
+    {
+        Scanner sc = new Scanner(System.in);
+        double[] values = InputMoment();
+        double FX = values[0];
+        double FY = values[1];
+        double MomentDueToForce = values[2];
+        System.out.println("If extra moments are present Enter 1 \nElse 0");
+        int choice = sc.nextInt();
+        double ExtraMoment = 0 ;
+        if(choice == 1)
+        {
+            ExtraMoment = InputExtraMoments();
+        }
+        double TotalMoment = MomentDueToForce + ExtraMoment ;
+        double Resultant = Math.hypot(FX , FY);
+        double Distance = TotalMoment/Resultant ;
+        if(Resultant == 0)
+        {
+            System.out.println("No force is present, only moment is there");
+            System.out.printf("Total moment is %.2f\n", TotalMoment);
+        }
+        else
+        {
+        System.out.printf("Resultant force is %.2f\n", Resultant);
+        System.out.printf("The distance of the force from refrence point is %.2f\n", Distance);
+        System.out.printf("Total moment is %.2f\n", TotalMoment);
+        }
+    }
+    public static double[] InputMoment()
+    {
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("\033[H\033[2J");
+        System.out.println("Enter the number of known forces :");
+        int n = sc.nextInt() ;
+        double FX=0 , FY=0 ;
+        double Moment = 0 ;
+        double angle =0 ;
+        for( int i = 0 ; i < n ; i++)
+        {
+            System.out.println("\033[H\033[2J");
+            System.out.println("Enter the information of force" + (i+1));
+            int quadrant = InputQuadrant();
+            double magnitude = InputMagnitude();            
+            System.out.println("Select A for angle or S for slope");
+            char input = sc.next().charAt(0);
+            switch (input)
+            {
+                case 'A':
+                    angle = InputAngle(quadrant);
+                    break;
+                case 'S':
+                    angle = InputSlope(quadrant);
+                    break;
+                case 'a':
+                    angle = InputAngle(quadrant);
+                    break;
+                case 's':
+                    angle = InputSlope(quadrant);
+                    break;
+                default:
+                    System.out.println("Invalid Input");
+                    break;
+            }
+            FX += CalcFX(magnitude , angle);
+            FY += CalcFY(magnitude , angle);
+
+            System.out.println("Enter the distance from the refrence point");
+            double distance = sc.nextDouble() ;
+            System.out.println("Select 1 for Moment acting Anticlockwise or 2 for Clockwise");
+            int direction = sc.nextInt() ;
+            Moment += CalcMoment(magnitude , distance , direction);
+        }
+        double[] Finalvalues = new double[3];
+        Finalvalues[0] = FX ;
+        Finalvalues[1] = FY ;
+        Finalvalues[2] = Moment ;
+        return Finalvalues ;
+    }
+    public static double InputExtraMoments()
+    {
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("\033[H\033[2J");
+        System.out.println("Enter the number of moments :");
+        int n = sc.nextInt() ;
+        double Moment = 0 ;
+        int direction;
+        for( int i = 0 ; i < n ; i++)
+        {
+            System.out.println("Enter the Magnitude of the Moment " + (i+1));
+            double magnitude = sc.nextDouble() ;
+            System.out.println("Select 1 for Moment acting Anticlockwise or 2 for Clockwise");
+            direction = sc.nextInt() ;
+            switch(direction)
+            {
+                case 1:
+                Moment += magnitude ;
+                break;
+                case 2:
+                Moment -= magnitude ;
+                break;
+                default :
+                System.out.println("Invalid direction");
+                break;
+            }
+        }
+        return Moment ;
+    }
+    public static double CalcMoment(double magnitude , double distance , int direction)
+    {
+        if(direction == 1)
+        {
+            double Moment = magnitude*distance;
+            return Moment ;
+        }
+        if(direction == 2)
+        {
+            double Moment = -magnitude*distance;
+            return Moment ;
+        }
+        return 0 ;
+    }
 }
