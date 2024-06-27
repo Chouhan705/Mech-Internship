@@ -1,4 +1,7 @@
 import java.util.*;
+
+import org.w3c.dom.ls.LSLoadEvent;
+
 import java.lang.*;
 import java.text.*;
 
@@ -381,9 +384,23 @@ class OptimizedResultant
         }
         else
         {
-        System.out.printf("Resultant force is %.2f\n", Resultant);
-        System.out.printf("The distance of the force from refrence point is %.2f\n", Distance);
-        System.out.printf("Total moment is %.2f\n", TotalMoment);
+            
+
+            System.out.printf("Resultant force is %.2f\n", Resultant);
+            System.out.printf("The distance of the force from refrence point is %.2f\n", Distance);
+        
+            if(TotalMoment > 0)
+            {
+                System.out.println("The Moment is in Anti Clockwise direction");
+                System.out.printf("Total moment is %.2f\n", TotalMoment);
+            }
+            if(TotalMoment < 0)
+            {
+                System.out.println("The Moment is in Clockwise direction");
+                TotalMoment = 0 - TotalMoment;
+                System.out.printf("Total moment is %.2f\n", TotalMoment);
+            }
+            
         }
     }
     public static double[] InputMoment()
@@ -479,4 +496,192 @@ class OptimizedResultant
         }
         return 0 ;
     }
+    public static void Joints()
+    {
+        double[] values = InputMoment();
+        double FX = values[0];
+        double FY = values[1];
+        double MomentDueToForce = values[2];
+        double[] LoadValues = InputLoad();
+        double LX = LoadValues[0];
+        double LY = LoadValues[1];
+        double MomentDueToLoad = LoadValues[2];
+        double TotalFX = FX + LX;
+        double TotalFY = FY + LY;
+        System.out.println("If any extra moments are present enter 1 else 0");
+        int choice = sc.nextInt();
+        double ExtraMoment = 0 ;
+        if(choice == 1)
+        {
+            ExtraMoment = InputExtraMoments();
+        }
+        double TotalMoment = MomentDueToForce + MomentDueToLoad + ExtraMoment ;
+        System.out.println("Enter the number of Fixed Joints present");
+        int fixed = sc.nextInt();
+        System.out.println("Enter the number of Roller Joints present");
+        int roller = sc.nextInt();
+        System.out.println("Enter the number of Hinged Joints present");
+        int hinged = sc.nextInt();
+        if(fixed+roller+hinged != 2 || fixed+roller+hinged != 1)
+        {
+            System.out.println("Cannot solve for this case");
+        }
+        else
+        {
+            if(fixed!=0)
+            {
+                double DistanceFixed = InputJoint();
+            }
+            if(roller!= 0)
+            {
+                double DistanceRoller = InputJoint();
+            }
+            if(hinged!= 0)
+            {
+                double DistanceHinged = InputJoint();
+            }
+            
+        }
+
+    }
+    public static double InputJoint()
+    {
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("Enter Distance of the Joint from the Refrence Point");
+        double distance = sc.nextDouble() ;
+        return distance;
+    }
+    public static double[] InputLoad()
+    {
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("Enter the number of loads");
+        int n = sc.nextInt() ;
+        double[] Load = new double[100];
+        double[] Distance = new double[100];
+        double[] Direction = new double[100];
+        for(int i = 0 ; i < n ; i++)
+        {
+            System.out.println("Select the type of load");
+            System.out.println("1 for Point Load");
+            System.out.println("2 for Uniform Distributed Load");
+            System.out.println("3 for Uniformly Varrying Load");
+            System.out.println("4 for Combined UDL and UVL");
+            int choice = sc.nextInt();
+            double magnitude;
+            double length;
+            double smallermagnitude;
+            double biggermagnitude;
+            double distance;
+            int orientation ;
+            switch(choice)
+            {
+                case 1:
+                System.out.println("Enter the magnitude of the Point Load");
+                Load[i] = sc.nextDouble();
+                System.out.println("Enter the distance from the refrence point");
+                Distance[i]= sc.nextDouble();
+                System.out.println("Choose the direction of Potential Moment");
+                System.out.println("1: Anticlockwise");
+                System.out.println("2: Clockwise");
+                Direction[i] = sc.nextInt();
+                break;
+
+                case 2:
+                System.out.println("Enter the magnitude of the Load");
+                magnitude = sc.nextDouble();
+                System.out.println("Enter the length of applied Load");
+                length = sc.nextDouble();
+                System.out.println("Enter the distance of the closer side from the refrence point");
+                distance = sc.nextDouble();
+                System.out.println("Choose the direction of Potential Moment");
+                System.out.println("1: Anticlockwise");
+                System.out.println("2: Clockwise");
+                Direction[i] = sc.nextInt();
+                Load[i] = magnitude*length;
+                Distance[i] = distance + (length/2);
+                break;
+
+                case 3:
+                System.out.println("Choose the orientation of the UVL");
+                System.out.println("1: Slanted toward the refrence point");
+                System.out.println("2: Slanted away from thr refrence point");
+                orientation = sc.nextInt();
+                System.out.println("Enter the magnitude of the Load");
+                magnitude = sc.nextDouble();
+                System.out.println("Enter the length of applied Load");
+                length = sc.nextDouble();
+                System.out.println("Enter the distance of the closer side from the refrence point");
+                distance = sc.nextDouble();
+                System.out.println("Choose the direction of Potential Moment");
+                System.out.println("1: Anticlockwise");
+                System.out.println("2: Clockwise");
+                Direction[i] = sc.nextInt();
+                Load[i] = (0.5*magnitude*length);
+                if(orientation ==1)
+                {
+                    Distance[i] = distance + ((2*length)/3);
+                }
+                if(orientation == 2)
+                {
+                    Distance[i] = distance + (length/3);
+                }
+                break;
+
+                case 4:
+                System.out.println("Choose the orientation of the UVL");
+                System.out.println("1: Slanted toward the refrence point");
+                System.out.println("2: Slanted away from thr refrence point");
+                orientation = sc.nextInt();
+                System.out.println("Enter the smaller magnitude of the Load");
+                smallermagnitude = sc.nextDouble();
+                System.out.println("Enter the bigger magnitude of the Load");
+                biggermagnitude = sc.nextDouble();
+                System.out.println("Enter the length of applied Load");
+                length = sc.nextDouble();
+                System.out.println("Enter the distance of the closer side from the refrence point");
+                distance = sc.nextDouble();
+                System.out.println("Choose the direction of Potential Moment");
+                System.out.println("1: Anticlockwise");
+                System.out.println("2: Clockwise");
+                Direction[i] = sc.nextInt();
+                Load[i] = smallermagnitude*length;
+                Distance[i] = distance + (length/2);
+
+                Load[i+1] = (0.5*(biggermagnitude-smallermagnitude)*length);
+                if(orientation ==1)
+                {
+                    Distance[i+1] = distance + ((2*length)/3);
+                }
+                if(orientation == 2)
+                {
+                    Distance[i+1] = distance - (length/3);
+                }
+                Direction[i+1]= Direction[i];
+                i++;
+                n++;
+                break;
+                default:
+                System.out.println("Invalid Input");
+                break;
+            }
+        }
+        double LX = 0;
+        double LY;
+        for(int i = 0 ; i < n ; i++)
+        {
+            LY += CalcFY(Load[i], Math.toRadians(270));
+        }
+        double MomentDueToLoad ;
+        for(int i = 0 ; i < n ; i++)
+        {
+            MomentDueToLoad += CalcMoment(Load[i] , Distance[i] , Direction[i]);
+        }
+
+        double[] FinalValues = new double[3];
+        FinalValues[0] = LX;
+        FinalValues[1] = LY;
+        FinalValues[2] = MomentDueToLoad;
+        return FinalValues;
+    }
+
 }
