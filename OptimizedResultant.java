@@ -19,6 +19,8 @@ class OptimizedResultant
         System.out.println("5. Moment of Parallel Force System");
         System.out.println("6. Moment of General force System on a Beam") ;
         System.out.println("7. Moment of General force System on a Plane") ;
+        System.out.println("8. Joints and Loads");
+        System.out.println("9. Loads");
         int choice = sc.nextInt() ;
         switch(choice)
         {
@@ -43,6 +45,12 @@ class OptimizedResultant
             case 7:
                 MomentGeneralPlane();
                 break ;
+                case 8:
+                Joints();
+                break ;
+                case 9:
+                InputLoad();
+                break;
             default:
                 System.out.println("Invalid Choice") ;
                 break ;
@@ -412,31 +420,53 @@ class OptimizedResultant
         double FX=0 , FY=0 ;
         double Moment = 0 ;
         double angle =0 ;
+        int Inclination = 2;
         for( int i = 0 ; i < n ; i++)
         {
             System.out.println("\033[H\033[2J");
             System.out.println("Enter the information of force" + (i+1));
-            int quadrant = InputQuadrant();
-            double magnitude = InputMagnitude();            
-            System.out.println("Select A for angle or S for slope");
-            char input = sc.next().charAt(0);
-            switch (input)
+            System.out.println("Enter 1 if the force is inclined else 0");
+            Inclination = sc.nextInt();
+            if(Inclination == 1)
             {
-                case 'A':
-                    angle = InputAngle(quadrant);
-                    break;
-                case 'S':
-                    angle = InputSlope(quadrant);
-                    break;
-                case 'a':
-                    angle = InputAngle(quadrant);
-                    break;
-                case 's':
-                    angle = InputSlope(quadrant);
-                    break;
-                default:
-                    System.out.println("Invalid Input");
-                    break;
+                int quadrant = InputQuadrant();
+                double magnitude = InputMagnitude();            
+                System.out.println("Select A for angle or S for slope");
+                char input = sc.next().charAt(0);
+                switch (input)
+                {
+                    case 'A':
+                        angle = InputAngle(quadrant);
+                        break;
+                    case 'S':
+                        angle = InputSlope(quadrant);
+                        break;
+                    case 'a':
+                        angle = InputAngle(quadrant);
+                        break;
+                    case 's':
+                        angle = InputSlope(quadrant);
+                        break;
+                    default:
+                        System.out.println("Invalid Input");
+                        break;
+                }
+            }
+            else
+            {
+                double magnitude = InputMagnitude();
+                System.out.println("Choose the orientation of the force");
+                System.out.println("1. Upwards");
+                System.out.println("2. Downwards");
+                int direction = sc.nextInt();
+                if(direction == 1)
+                {
+                    angle = Math.PI/2 ;
+                }
+                if(direction = 2)
+                {
+                    angle = (3*Math.PI)/2 ;
+                }
             }
             FX += CalcFX(magnitude , angle);
             FY += CalcFY(magnitude , angle);
@@ -498,6 +528,7 @@ class OptimizedResultant
     }
     public static void Joints()
     {
+        Scanner sc = new Scanner(System.in) ;
         double[] values = InputMoment();
         double FX = values[0];
         double FY = values[1];
@@ -516,32 +547,14 @@ class OptimizedResultant
             ExtraMoment = InputExtraMoments();
         }
         double TotalMoment = MomentDueToForce + MomentDueToLoad + ExtraMoment ;
-        System.out.println("Enter the number of Fixed Joints present");
-        int fixed = sc.nextInt();
-        System.out.println("Enter the number of Roller Joints present");
-        int roller = sc.nextInt();
-        System.out.println("Enter the number of Hinged Joints present");
-        int hinged = sc.nextInt();
-        if(fixed+roller+hinged != 2 || fixed+roller+hinged != 1)
-        {
-            System.out.println("Cannot solve for this case");
-        }
-        else
-        {
-            if(fixed!=0)
-            {
-                double DistanceFixed = InputJoint();
-            }
-            if(roller!= 0)
-            {
-                double DistanceRoller = InputJoint();
-            }
-            if(hinged!= 0)
-            {
-                double DistanceHinged = InputJoint();
-            }
-            
-        }
+        System.out.println("Choose the System of Joints");
+        System.out.println("1. Roller and Hinge");
+        System.out.println("2. Roller and Fixed");
+        System.out.println("3. Fixed and Hinge");
+        System.out.println("4. 2 Roller");
+        System.out.println("5. 2 Hinge");
+        System.out.println("6. 2 Fixed");
+        int system = sc.nextInt();
 
     }
     public static double InputJoint()
@@ -551,6 +564,7 @@ class OptimizedResultant
         double distance = sc.nextDouble() ;
         return distance;
     }
+
     public static double[] InputLoad()
     {
         Scanner sc = new Scanner(System.in) ;
@@ -558,7 +572,7 @@ class OptimizedResultant
         int n = sc.nextInt() ;
         double[] Load = new double[100];
         double[] Distance = new double[100];
-        double[] Direction = new double[100];
+        int[] Direction = new int[100];
         for(int i = 0 ; i < n ; i++)
         {
             System.out.println("Select the type of load");
@@ -654,7 +668,7 @@ class OptimizedResultant
                 }
                 if(orientation == 2)
                 {
-                    Distance[i+1] = distance - (length/3);
+                    Distance[i+1] = distance + (length/3);
                 }
                 Direction[i+1]= Direction[i];
                 i++;
@@ -666,12 +680,12 @@ class OptimizedResultant
             }
         }
         double LX = 0;
-        double LY;
+        double LY = 0;
         for(int i = 0 ; i < n ; i++)
         {
             LY += CalcFY(Load[i], Math.toRadians(270));
         }
-        double MomentDueToLoad ;
+        double MomentDueToLoad = 0 ;
         for(int i = 0 ; i < n ; i++)
         {
             MomentDueToLoad += CalcMoment(Load[i] , Distance[i] , Direction[i]);
