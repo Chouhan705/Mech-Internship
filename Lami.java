@@ -61,6 +61,13 @@ class Lami
         double unknownForce1Magnitude = (knownForceMagnitude*Math.sin(unknownAngle1))/Math.sin(knownForceAngle);
         double unknownForce2Magnitude = (knownForceMagnitude*Math.sin(unknownAngle2))/Math.sin(knownForceAngle);
 
+        if(knownForceAngle+unknownAngle1+unknownAngle2!= (2*Math.PI))
+        {
+            System.out.println("The sum of the angles is not equal to 360 degrees");
+            System.out.println("Re-check the angles entered");
+            System.exit(0);
+        }
+
         double[] ForceValues = new double[2];
         ForceValues[0] = unknownForce1Magnitude;
         ForceValues[1] = unknownForce2Magnitude;
