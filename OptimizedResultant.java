@@ -427,10 +427,11 @@ class OptimizedResultant
             System.out.println("Enter the information of force" + (i+1));
             System.out.println("Enter 1 if the force is inclined else 0");
             Inclination = sc.nextInt();
+            double magnitude;
             if(Inclination == 1)
             {
                 int quadrant = InputQuadrant();
-                double magnitude = InputMagnitude();            
+                magnitude = InputMagnitude();            
                 System.out.println("Select A for angle or S for slope");
                 char input = sc.next().charAt(0);
                 switch (input)
@@ -454,7 +455,7 @@ class OptimizedResultant
             }
             else
             {
-                double magnitude = InputMagnitude();
+                magnitude = InputMagnitude();
                 System.out.println("Choose the orientation of the force");
                 System.out.println("1. Upwards");
                 System.out.println("2. Downwards");
@@ -463,7 +464,7 @@ class OptimizedResultant
                 {
                     angle = Math.PI/2 ;
                 }
-                if(direction = 2)
+                if(direction == 2)
                 {
                     angle = (3*Math.PI)/2 ;
                 }
@@ -549,21 +550,138 @@ class OptimizedResultant
         double TotalMoment = MomentDueToForce + MomentDueToLoad + ExtraMoment ;
         System.out.println("Choose the System of Joints");
         System.out.println("1. Roller and Hinge");
-        System.out.println("2. Roller and Fixed");
-        System.out.println("3. Fixed and Hinge");
-        System.out.println("4. 2 Roller");
-        System.out.println("5. 2 Hinge");
-        System.out.println("6. 2 Fixed");
+        System.out.println("2. 2 Roller");
+        System.out.println("3. 2 Hinge");
         int system = sc.nextInt();
+        switch(system)
+        {
+            case 1:
+            Roller_Hinge(TotalFY ,  TotalFX , TotalMoment);
+            break;
+            case 2:
+            TwoRoller(TotalFY , TotalFX , TotalMoment);
+            break;
+            case 3:
+            TwoHinge(TotalFY , TotalFX , TotalMoment);
+            break;
+            default:
+            System.out.println("Invalid System of Joints");
+            break;
+        }
 
     }
-    public static double InputJoint()
+    public static void Roller_Hinge(double FY , double FX , double Moment)
     {
         Scanner sc = new Scanner(System.in) ;
-        System.out.println("Enter Distance of the Joint from the Refrence Point");
-        double distance = sc.nextDouble() ;
-        return distance;
+        System.out.println("\033[H\033[2J");
+        System.out.println("Using the Hinge Joint as refrence point");
+        double[] RollerValues = InputJoint("Roller");
+        double RollerDistance = RollerValues[0];
+        double RollerOrientation = RollerValues[1];
+        double[] HingeValues = InputJoint("Hinge");
+        double HingeDistance = HingeValues[0];
+        double HingeOrientation = HingeValues[1];
+        
+        double[] ReactionValues = SimultaneusEqnSolver(RollerDistance,HingeDistance,(0-Moment),1,1,(0-FY));
+        double RollerReaction = ReactionValues[0];
+        double HingeReactionFY = ReactionValues[1];
+        double HingeReactionFX = 0 - FX;
+        double HingeReaction = Math.hypot(HingeReactionFX, HingeReactionFY);
+
+        System.out.println("Roller Reaction: " + RollerReaction + " N");
+        System.out.println("Hinge Reaction: " + HingeReaction + " N");
+        System.out.println("\"Aproxx Values\"");
+
     }
+    public static void TwoRoller(double FY , double FX , double Moment)
+    {
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("\033[H\033[2J");
+        double[] Roller1Values = InputJoint("Roller");
+        double Roller1Distance = Roller1Values[0];
+        double Roller1Orientation = Roller1Values[1];
+        double[] Roller2Values = InputJoint("Roller");
+        double Roller2Distance = Roller2Values[0];
+        double Roller2Orientation = Roller2Values[1];
+        
+        double[] ReactionValues = SimultaneusEqnSolver(Roller1Distance,Roller2Distance,(0-Moment),1,1,(0-FY));
+        double Roller1Reaction = ReactionValues[0];
+        double Roller2Reaction = ReactionValues[1];
+
+        System.out.println("Roller 1 Reaction : " +Roller1Reaction+ " N");
+        System.out.println("Roller 2 Reaction : " + Roller2Reaction+ " N");
+        System.out.println("\"Aproxx Values\"");
+    }
+    public static void TwoHinge(double FY , double FX , double Moment)
+    {
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("\033[H\033[2J");
+        System.out.println("Hinge Joint 1");
+        double[] Hinge1Values = InputJoint("Hinge");
+        double Hinge1Distance = Hinge1Values[0];
+        double Hinge1Orientation = Hinge1Values[1];
+        System.out.println("Hinge Joint 2");
+        double[] Hinge2Values = InputJoint("Hinge");
+        double Hinge2Distance = Hinge2Values[0];
+        double Hinge2Orientation = Hinge1Values[1];
+
+        double[] ReactionValues = SimultaneusEqnSolver(Hinge1Distance,Hinge2Distance,(0-Moment),1,1,(0-FY));
+        double Hinge1Reaction = ReactionValues[0];
+        double Hinge2Reaction = ReactionValues[1];
+
+        System.out.println("Hinge 1 Reaction : " + Hinge1Reaction+ " N");
+        System.out.println("Hinge 2 Reaction : " + Hinge2Reaction+ " N");
+        System.out.println("\"Aproxx Values\"");
+
+    }
+    public static double[] InputJoint(String name)
+    {
+        Scanner sc = new Scanner(System.in) ;
+        double distance=0;
+        double orientation=0;
+        switch(name)
+        {
+            case "Roller":
+            System.out.println("Enter the Distance of the Roller from the Refrence Point");
+            System.out.println("Enter 0 if it is refernce point");
+            distance = sc.nextDouble() ;
+            System.out.println("Select the orientation of moment caused by the joint");
+            System.out.println("1. Anti-Clockwise");
+            System.out.println("2.Clockwise");
+            System.out.println("0. If joint is at refrence point");
+            orientation = sc.nextDouble();
+            break;
+            case "Hinge":
+            System.out.println("Enter the Distance of the Hinge from the Refrence Point");
+            System.out.println("Enter 0 if it is refernce point");
+            distance = sc.nextDouble() ;
+            System.out.println("Select the orientation of moment caused by the joint");
+            System.out.println("1. Anti-Clockwise");
+            System.out.println("2.Clockwise");
+            System.out.println("0. If joint is at refrence point");
+            orientation = sc.nextDouble();
+            break;
+            case "Fixed":
+            System.out.println("Enter the Distance of the Fixed from the Refrence Point");
+            System.out.println("Enter 0 if it is refernce point");  
+            distance = sc.nextDouble() ;
+            System.out.println("Select the orientation of moment caused by the joint");
+            System.out.println("1. Anti-Clockwise");
+            System.out.println("2.Clockwise");
+            System.out.println("0. If joint is at refrence point");
+            orientation = sc.nextDouble();
+            break;
+            default:
+            System.out.println("Invalid Joint");
+            break;
+        }
+
+        double[] JointValues = new double[2];
+        JointValues[0] = distance;
+        JointValues[1] = orientation;
+        return JointValues;
+    }
+
 
     public static double[] InputLoad()
     {
@@ -575,6 +693,7 @@ class OptimizedResultant
         int[] Direction = new int[100];
         for(int i = 0 ; i < n ; i++)
         {
+            System.out.println("\033[H\033[2J");
             System.out.println("Select the type of load");
             System.out.println("1 for Point Load");
             System.out.println("2 for Uniform Distributed Load");
