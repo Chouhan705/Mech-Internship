@@ -1,7 +1,4 @@
 import java.util.*;
-
-import org.w3c.dom.ls.LSLoadEvent;
-
 import java.lang.*;
 import java.text.*;
 
@@ -20,7 +17,7 @@ class OptimizedResultant
         System.out.println("6. Moment of General force System on a Beam") ;
         System.out.println("7. Moment of General force System on a Plane") ;
         System.out.println("8. Joints and Loads");
-        System.out.println("9. Loads");
+        System.out.println("9. Loads Resultant+Moment ");
         int choice = sc.nextInt() ;
         switch(choice)
         {
@@ -49,7 +46,7 @@ class OptimizedResultant
                 Joints();
                 break ;
                 case 9:
-                InputLoad();
+                Loads();
                 break;
             default:
                 System.out.println("Invalid Choice") ;
@@ -130,7 +127,6 @@ class OptimizedResultant
         double[] SimulSolution = SimultaneusEqnSolver(CoefX1, CoefY1, Const1, CoefX2, CoefY2, Const2);
         double UnknownForce1 = SimulSolution[0];
         double UnknownForce2 = SimulSolution[1];
-
         System.out.println("\033[H\033[2J");
         System.out.println("The value of Unknown Force 1 is :");
         System.out.format("%.2f" , UnknownForce1);
@@ -239,7 +235,7 @@ class OptimizedResultant
         double angle = Math.atan(vertical/horizontal) ;
         if(quadrant == 1)
         {
-            //angle = (angle) ;
+            angle = (angle) ;
         }
         if(quadrant == 2)
         {
@@ -335,6 +331,65 @@ class OptimizedResultant
         System.out.println("");
         System.out.println("The unknown force 2 is :");
         System.out.format("%.2f", unknownForce2Magnitude);
+
+    }
+    public static void Loads()
+    {
+        Scanner sc = new Scanner(System.in) ;
+        double[] values = InputMoment();
+        double FX = values[0];
+        double FY = values[1];
+        double MomentDueToForce = values[2];
+        double[] LoadValues = InputLoad();
+        double LX = LoadValues[0];
+        double LY = LoadValues[1];
+        double MomentDueToLoad = LoadValues[2];
+        double TotalFX = FX + LX;
+        double TotalFY = FY + LY;
+        System.out.println("If any extra moments are present enter 1 else 0");
+        int choice = sc.nextInt();
+        double ExtraMoment = 0 ;
+        if(choice == 1)
+        {
+            ExtraMoment = InputExtraMoments();
+        }
+        double TotalMoment = MomentDueToForce + MomentDueToLoad + ExtraMoment ;
+        if(TotalFX < 0)
+        {
+            System.out.println("Total FX : "+(0-TotalFX)+" N Leftwards");
+        }
+        if(TotalFX > 0)
+        {
+            System.out.println("Total FX : "+(TotalFX)+" N Rightwards");
+        }
+        if(TotalFX==0)
+        {
+            System.out.println("All forces cancel out in the X Direction");
+        }
+        if(TotalFY < 0)
+        {
+            System.out.println("Total FY : "+(0-TotalFY)+" N Downwards");
+        }
+        if(TotalFY > 0)
+        {
+            System.out.println("Total FY : "+TotalFY+" N Upwards");
+        }
+        if(TotalFY==0)
+        {
+            System.out.println("All forces cancel out in the Y Direction");
+        }
+        if(TotalMoment < 0)
+        {
+            System.out.println("Total Moment : "+TotalMoment+" N/m Clockwise");
+        }
+        if(TotalMoment > 0)
+        {
+            System.out.println("Total Moment : "+TotalMoment+" N/m Anti-Clockwise");
+        }
+        if(TotalMoment == 0)
+        {
+            System.out.println("Total Moment : "+TotalMoment+" N/m");
+        }
 
     }
     public static void MomentGeneralPlane()
@@ -641,7 +696,7 @@ class OptimizedResultant
         double orientation=0;
         switch(name)
         {
-            case "Roller":
+            case "Roller":  
             System.out.println("Enter the Distance of the Roller from the Refrence Point");
             System.out.println("Enter 0 if it is refernce point");
             distance = sc.nextDouble() ;
