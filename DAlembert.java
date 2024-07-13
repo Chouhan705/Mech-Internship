@@ -35,8 +35,23 @@ public class DAlembert
             }
             break;
 
-            case 2:
-            Pulleysystem();
+           case 2:
+            System.out.println("Choose the operation to perform");
+            System.out.println("1. Find tension with One Block");
+            System.out.println("2. Find tension with Two blocks");
+            int rope = sc.nextInt();
+            if(rope==1)
+            {
+                Pulleysystem();
+            }
+            else if(rope == 2)
+            {
+                TwoBlocksWithRope();
+            }
+            else
+            {
+                System.out.println("Invalid choice");
+            }
             break;
 
             default:
@@ -203,5 +218,82 @@ public class DAlembert
         double acceleration = sc.nextDouble();
         double Tension = (mass*g)-(mass*acceleration);
         System.out.println("The tension in the string is "+(Tension)+ " N");
+    }
+    public static void TwoBlocksWithRope()
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the mass of the block force is applied on( gravitational too ) [divide by 9.81 if weight is given]");
+        double mass1 = sc.nextDouble();
+        System.out.println("Enter the mass of the second block[divide by 9.81 if weight is given]");
+        double mass2 = sc.nextDouble();
+        System.out.println("Enter the frictional constant (if none enter 1)");
+        double mu = sc.nextDouble();
+        System.out.println("Choose the arrangement of the blocks");
+        System.out.println("1. On the same plane");
+        System.out.println("2. Hanging on the sides of a pulley");
+        int arrangement = sc.nextInt();
+        switch(arrangement)
+        {
+            case 1:
+            System.out.println("Enter the force applied");
+            double force = sc.nextDouble();
+            double normal1 = (mass1*9.81);
+            double normal2 = (mass2*9.81);
+            // eq1 force - t - mu*N1 = m1(a)
+            // eq2 t-mu*N2 = m2(a)
+
+            // m1(a) + t = F - mu*N1
+            // m2(a) - t = - mu*N2
+            double Coefx1=mass1;
+            double Coefy1 = 1;
+            double Const1 = force - mu*normal1;
+            double Coefx2 = mass2;
+            double Coefy2 = -1;
+            double Const2 = - mu*normal2;
+            double[] Answer = SimultaneusEqnSolver(Coefx1,Coefy1,Const1,Coefx2,Coefy2,Const2);
+            double Acceleration = Answer[0];
+            double Tension = Answer[1];
+            System.out.printf("The acceleration of the blocks is %.2f ",(Acceleration));
+            System.out.printf("m/s^2");
+            System.out.println();
+            System.out.printf("The tension in the string is %.2f",(Tension));
+            System.out.printf("N");
+            break;
+
+            case 2:
+            double normal = mass2*9.81;
+            // m1(a) + t = m1*g
+            // m2(a) - t = - mu*N
+            Coefx1=mass1;
+            Coefy1 = 1;
+            Const1 = mass1*9.81;
+            Coefx2 = mass2;
+            Coefy2 = -1;
+            Const2 = - mu*normal;
+            Answer = SimultaneusEqnSolver(Coefx1,Coefy1,Const1,Coefx2,Coefy2,Const2);
+            Acceleration = Answer[0];
+            Tension = Answer[1];
+            System.out.printf("The acceleration of the blocks is %.2f ",(Acceleration));
+            System.out.printf("m/s^2");
+            System.out.println();
+            System.out.printf("The tension in the string is %.2f",(Tension));
+            System.out.printf("N");
+            break;
+
+            default:
+            System.out.println("Invalid choice");
+            break;
+        }
+    }
+    public static double[] SimultaneusEqnSolver(double CoefX1 , double CoefY1 , double Const1 , double CoefX2 , double CoefY2 , double Const2)
+    {
+        //Coefx1(x) + Coefy1(y) = Const1
+        //Coefx2(x) + Coefy2(y) = Const2
+        double[] ResultantValues = new double[2];
+        double x = (Const1*CoefY2 - Const2*CoefY1)/(CoefX1*CoefY2 - CoefX2*CoefY1);
+        double y = (Const1*CoefX2 - Const2*CoefX1)/(CoefX2*CoefY1 - CoefX1*CoefY2);
+        ResultantValues[0] = x ;
+        ResultantValues[1] = y ;
+        return ResultantValues ;
     }
 }
