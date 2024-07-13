@@ -16,7 +16,7 @@ public class DAlembert
             int system = sc.nextInt();
 
             System.out.println("Choose what you want find:");
-            System.out.println("1. Acceleration & some other quantity");
+            System.out.println("1. Acceleration & some other physical quantity");
             System.out.println("2. Acceleration and Tension");
             int quantity = sc.nextInt();
       
