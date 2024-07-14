@@ -66,7 +66,6 @@ public class DAlembert
             System.out.println("Invalid choice");
             break;
         }
-        sc.close();
     }
 
     public static void Formula()
@@ -139,7 +138,6 @@ public class DAlembert
             System.out.println("The acceleration is "+(a)+ " m/s^2");
             break;
         }
-        sc.close();
     }
 
         public static void oneBlock()
@@ -167,7 +165,6 @@ public class DAlembert
             {
                 System.out.println("okay :)");
             }
-            sc.close();
         }
 
         public static void multipleBlock()
@@ -206,7 +203,6 @@ public class DAlembert
             double time = Answer[1];
             System.out.println("The total distance travelled by the blocks "+(distance)+ " m");
             System.out.println("The time when the blocks collide "+(Math.sqrt(time))+ " s");
-            sc.close();
           }
 
     public static void oneBlockPulleysystem() 
@@ -221,7 +217,6 @@ public class DAlembert
         double acceleration = sc.nextDouble();
         double Tension = (mass*g)-(mass*acceleration);
         System.out.println("The tension in the string is "+(Tension)+ " N");
-        sc.close();
     }
 
     public static void twoBlockPulleysystem()
@@ -250,7 +245,6 @@ public class DAlembert
         System.out.println();
         System.out.printf("The tension in the string is %.2f",(Tension));
         System.out.printf("N");
-        sc.close();
     }
 
     public static void TwoBlocksWithRopeOnTheSamePlane()
