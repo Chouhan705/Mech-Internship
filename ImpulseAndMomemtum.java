@@ -15,9 +15,18 @@ public class ImpulseAndMomentum
             System.out.println("1. x-axis");
             System.out.println("2. y-axis");
             int line = sc.nextInt();
-            if (line==1)
+             if (line==1)
             {
-                LineofImpactisXaxis();
+                System.out.println("Enter 1 if you want to find Co-efficient of restitution (e) else enter 0");
+                int choice = sc.nextInt();
+                if(choice==1)
+                {
+                    CoefficientOfRestitution();
+                }
+                if(choice==0)
+                {
+                    LineofImpactisXaxis();
+                }
             }
             if (line==2)
             {
@@ -52,7 +61,43 @@ public class ImpulseAndMomentum
                 break;
             }  
         }
-    }   
+    } 
+     public static void CoefficientOfRestitution()
+        {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Enter m1");
+            double m1 = sc.nextDouble();
+            System.out.println("Enter m2");
+            double m2 = sc.nextDouble();
+            System.out.println("Enter u1(include sign according to direction)");
+            double u1 = sc.nextDouble();
+            System.out.println("Enter u2(include sign according to direction)");
+            double u2 = sc.nextDouble();
+            System.out.println("Enter 1 if object 1 changes its direction after collision else enter 2");
+            int object = sc.nextInt();
+            if(object==1)
+            {
+                System.out.println("Enter v1(include sign according to direction)");
+                double v1 = sc.nextDouble();
+                double v2 = ((m1*u1 + m2*u2)-(m1*v1))/(m2);
+                System.out.println("v2 is "+(v2)+ " m/s");
+                double e = ((v2-v1)/(u1-u2));
+                System.out.println("The coefficient of restitution (e) is "+(e));
+            }
+            else if(object==2)
+            {
+                System.out.println("Enter v2(include sign according to direction)");
+                double v2 = sc.nextDouble();
+                double v1 = ((m1*u1 + m2*u2)-(m2*v2))/(m1);
+                System.out.println("v1 is "+(v1)+ " m/s");
+                double e = ((v2-v1)/(u1-u2));
+                System.out.println("The coefficient of restitution (e) is "+(e));
+            }
+            else
+            {
+                System.out.println("sorry, you ran out of options :/");
+            }
+        }
         public static void LineofImpactisXaxis()
         {
             Scanner sc = new Scanner(System.in);
