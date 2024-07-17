@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.*;
 import java.text.*;
 
-class OptimizedResultant
+class JavaAll
 {
     
     public static void main(String args[])
@@ -10,9 +10,9 @@ class OptimizedResultant
         Scanner sc = new Scanner(System.in) ;
         System.out.println("Choose the operation to perform") ;
         System.out.println("1. Basic Resultant") ;
-        System.out.println("2. One Unknown Foce") ;
+        System.out.println("2. One Unknown Force") ;
         System.out.println("3. Two Unknown Forces") ;
-        System.out.println("4. Lami");
+        System.out.println("4. Lami's Theorem");
         System.out.println("5. Moment of Parallel Force System");
         System.out.println("6. Moment of General force System on a Beam") ;
         System.out.println("7. Moment of General force System on a Plane") ;
@@ -25,7 +25,7 @@ class OptimizedResultant
                 getResultant() ;
                 break ;
             case 2:
-                getOneUnknownFroce () ;
+                getOneUnknownForce () ;
                 break ;
             case 3:
                 getTwoUnknownForces() ;
@@ -67,7 +67,7 @@ class OptimizedResultant
         if(ResultantMagnitude == 0)
         {
             System.out.println("");  
-            System.out.println("All the forces cancel-out eachother");
+            System.out.println("All the forces cancel-out each other");
         }
         else
         {
@@ -80,7 +80,7 @@ class OptimizedResultant
             System.out.println(" Degrees");
         }
     }
-    public static void getOneUnknownFroce()
+    public static void getOneUnknownForce()
     {
         double[] Fvalues = InputForce();
         double FX = Fvalues[0] ;
@@ -124,7 +124,7 @@ class OptimizedResultant
         double CoefY2 = Math.sin(angle2);
         double Const1 = ResultantX - FX;
         double Const2 = ResultantY - FY;
-        double[] SimulSolution = SimultaneusEqnSolver(CoefX1, CoefY1, Const1, CoefX2, CoefY2, Const2);
+        double[] SimulSolution = simultaneousEqnSolver(CoefX1, CoefY1, Const1, CoefX2, CoefY2, Const2);
         double UnknownForce1 = SimulSolution[0];
         double UnknownForce2 = SimulSolution[1];
         System.out.println("\033[H\033[2J");
@@ -185,7 +185,8 @@ class OptimizedResultant
     public static int InputQuadrant()
     {
         Scanner sc = new Scanner(System.in) ;
-        System.out.println("Select the quadrant the force is present in :");
+        System.out.println("Select the quadrant the force is present in : ");
+        System.out.println("[Once the base of the force is at origin ]");
         System.out.println("1. Quadrant 1") ;
         System.out.println("2. Quadrant 2") ;
         System.out.println("3. Quadrant 3") ;
@@ -296,7 +297,7 @@ class OptimizedResultant
         return FY ;
     }   
     
-    public static double[] SimultaneusEqnSolver(double CoefX1 , double CoefY1 , double Const1 , double CoefX2 , double CoefY2 , double Const2)
+    public static double[] simultaneousEqnSolver(double CoefX1 , double CoefY1 , double Const1 , double CoefX2 , double CoefY2 , double Const2)
     {
         //Coefx1(x) + Coefy1(y) = Const1
         //Coefx2(x) + Coefy2(y) = Const2
@@ -331,7 +332,66 @@ class OptimizedResultant
         System.out.println("");
         System.out.println("The unknown force 2 is :");
         System.out.format("%.2f", unknownForce2Magnitude);
+        System.out.println("");
+        System.out.println("To use again enter 0 else any other number");
+        int choice = sc.nextInt();
+        if(choice == 0)
+        {
+            LamiAgain(knownForceMagnitude, unknownForce1Magnitude, unknownForce2Magnitude);
+        }
+        
 
+    }
+    public static void LamiAgain(double force1 , double force2 , double force3)
+    {
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Choose the force to use again");
+        System.out.println("1. Previous Known Force ");
+        System.out.println("2. Previous Unknown Force 1");
+        System.out.println("3. Previous Unknown Force 2");
+        int ReusedForce = sc.nextInt();
+        double knownForceMagnitude = 0 ;
+        switch(ReusedForce)
+        {
+            case 1:
+            knownForceMagnitude = force1;
+            break;
+            case 2:
+            knownForceMagnitude = force2;
+            break;
+            case 3:
+            knownForceMagnitude = force3;
+            break;
+            default:
+            System.out.println("Invalid Input");
+            break;
+        }
+        System.out.println("Enter the Angle opposite to the known force");
+        double knownForceAngle = Math.toRadians(sc.nextDouble());
+        System.out.println("Enter the Angle opposite to the unknown force 1");
+        double unknownAngle1 = Math.toRadians(sc.nextDouble());
+        System.out.println("Enter the Angle opposite to the unknown force 2");
+        double unknownAngle2 = Math.toRadians(sc.nextDouble());
+        if(knownForceAngle+unknownAngle1+unknownAngle2!= (2*Math.PI))
+        {
+            System.out.println("The sum of the angles is not equal to 360 degrees");
+            System.out.println("Re-check the angles entered");
+            return ;
+        }
+        double unknownForce1Magnitude = (knownForceMagnitude*Math.sin(unknownAngle1))/Math.sin(knownForceAngle);
+        double unknownForce2Magnitude = (knownForceMagnitude*Math.sin(unknownAngle2))/Math.sin(knownForceAngle);
+        System.out.println("The unknown force 1 is :");
+        System.out.format("%.2f", unknownForce1Magnitude);
+        System.out.println("");
+        System.out.println("The unknown force 2 is :");
+        System.out.format("%.2f", unknownForce2Magnitude);
+        System.out.println("");
+        System.out.println("To use again enter 0 else any other number");
+        int choice = sc.nextInt();
+        if(choice == 0)
+        {
+            LamiAgain(knownForceMagnitude, unknownForce1Magnitude, unknownForce2Magnitude);
+        }
     }
     public static void Loads()
     {
@@ -394,6 +454,30 @@ class OptimizedResultant
     }
     public static void MomentGeneralPlane()
     {
+        Scanner sc = new Scanner(System.in);
+        double[] Finalvalues = InputGeneralMoment();
+        double FX = Finalvalues[0];
+        double FY = Finalvalues[1];
+        double MomentDueToForce = Finalvalues[2];
+        System.out.println(FX + " + " +FY+" + "+MomentDueToForce);
+        //System.out.println("\033[H\033[2J");
+        System.out.print("Enter 1 if extra moments are present else enter 0: ");
+        int e = sc.nextInt();
+        double ExtraMoment = 0 ;
+        if (e == 1) 
+        {
+            ExtraMoment = InputExtraMoments();
+        }
+        System.out.println(ExtraMoment);
+        double TotalMoment = MomentDueToForce + ExtraMoment ;
+        System.out.printf("Resultant force is %.2f\n", Math.hypot(FX , FY));
+        System.out.printf("With an angle %.2f\n" , Math.toDegrees(Math.atan(FY/FX)));
+        System.out.printf("Total moment is %.2f\n", TotalMoment);
+        if (FX == 0 && FY == 0) {
+            System.out.println("No forces are present");
+        } else {
+            System.out.printf("Distance of the force from reference point is %.2f\n", TotalMoment/(FX*FY));
+        }
 
     }
     public static void MomentParallel()
@@ -450,7 +534,7 @@ class OptimizedResultant
             
 
             System.out.printf("Resultant force is %.2f\n", Resultant);
-            System.out.printf("The distance of the force from refrence point is %.2f\n", Distance);
+            System.out.printf("The distance of the force from reference point is %.2f\n", Distance);
         
             if(TotalMoment > 0)
             {
@@ -527,11 +611,101 @@ class OptimizedResultant
             FX += CalcFX(magnitude , angle);
             FY += CalcFY(magnitude , angle);
 
-            System.out.println("Enter the distance from the refrence point");
+            System.out.println("Enter the distance from the reference point");
             double distance = sc.nextDouble() ;
-            System.out.println("Select 1 for Moment acting Anticlockwise or 2 for Clockwise");
+            System.out.println("Choose the direction of moment caused by the force");
+            System.out.println("1. Anti-clockwise");
+            System.out.println("2. Clockwise");
+            System.out.println("0. If the Force is passing through the point");
             int direction = sc.nextInt() ;
             Moment += CalcMoment(magnitude , distance , direction);
+        }
+        double[] Finalvalues = new double[3];
+        Finalvalues[0] = FX ;
+        Finalvalues[1] = FY ;
+        Finalvalues[2] = Moment ;
+        return Finalvalues ;
+    }
+    public static double[] InputGeneralMoment()
+    {
+        Scanner sc = new Scanner(System.in) ;
+        System.out.println("\033[H\033[2J");
+        System.out.println("Enter the number of known forces :");
+        int n = sc.nextInt() ;
+        double FX=0 , FY=0 ;
+        double Moment = 0 ;
+        double angle =0 ;
+        int Inclination = 2;
+        for( int i = 0 ; i < n ; i++)
+        {
+            System.out.println("\033[H\033[2J");
+            System.out.println("Enter the information of force" + (i+1));
+            System.out.println("Enter 1 if the force is inclined else 0");
+            Inclination = sc.nextInt();
+            double magnitude;
+            double distance;
+            if(Inclination == 1)
+            {
+                int quadrant = InputQuadrant();
+                magnitude = InputMagnitude();            
+                System.out.println("Select A for angle or S for slope");
+                char input = sc.next().charAt(0);
+                switch (input)
+                {
+                    case 'A':
+                        angle = InputAngle(quadrant);
+                        break;
+                    case 'S':
+                        angle = InputSlope(quadrant);
+                        break;
+                    case 'a':
+                        angle = InputAngle(quadrant);
+                        break;
+                    case 's':
+                        angle = InputSlope(quadrant);
+                        break;
+                    default:
+                        System.out.println("Invalid Input");
+                        break;
+                }
+                System.out.println("Enter the Horizontal distance from the reference point");
+                System.out.println("[0 If the force is passing through the point]");
+                double distanceX = sc.nextDouble() ;
+                System.out.println("Enter the Vertical distance from the reference point");
+                System.out.println("[0 If the force is passing through the point]");
+                double distanceY = sc.nextDouble() ;
+                distance = Math.hypot(distanceX,distanceY);
+            }
+            else
+            {
+                
+                magnitude = InputMagnitude();
+                System.out.println("Choose the orientation of the force");
+                System.out.println("1. Upwards");
+                System.out.println("2. Downwards");
+                System.out.println("3. Rightwards");
+                System.out.println("4. Leftwards");
+                int direction = sc.nextInt();
+                if(direction == 1)
+                {
+                    angle = Math.PI/2 ;
+                }
+                if(direction == 2)
+                {
+                    angle = (3*Math.PI)/2 ;
+                }
+                System.out.println("Enter the Perpendicular Distance from the Reference Point");
+                System.out.println("[0 If the force is passing through the point]");
+                distance = sc.nextDouble() ;
+            }
+            FX += CalcFX(magnitude , angle);
+            FY += CalcFY(magnitude , angle);
+            System.out.println("Choose the direction of moment caused by the force");
+            System.out.println("1. Anti-clockwise");
+            System.out.println("2. Clockwise");
+            System.out.println("0. If the force is passing through the point");
+            int direction = sc.nextInt();
+            Moment += CalcMoment(magnitude, distance, direction);
         }
         double[] Finalvalues = new double[3];
         Finalvalues[0] = FX ;
@@ -575,11 +749,12 @@ class OptimizedResultant
             double Moment = magnitude*distance;
             return Moment ;
         }
-        if(direction == 2)
+        else if(direction == 2)
         {
             double Moment = -magnitude*distance;
             return Moment ;
         }
+        else
         return 0 ;
     }
     public static void Joints()
@@ -629,7 +804,7 @@ class OptimizedResultant
     {
         Scanner sc = new Scanner(System.in) ;
         System.out.println("\033[H\033[2J");
-        System.out.println("Using the Hinge Joint as refrence point");
+        System.out.println("Using the Hinge Joint as reference point");
         double[] RollerValues = InputJoint("Roller");
         double RollerDistance = RollerValues[0];
         double RollerOrientation = RollerValues[1];
@@ -637,7 +812,7 @@ class OptimizedResultant
         double HingeDistance = HingeValues[0];
         double HingeOrientation = HingeValues[1];
         
-        double[] ReactionValues = SimultaneusEqnSolver(RollerDistance,HingeDistance,(0-Moment),1,1,(0-FY));
+        double[] ReactionValues = simultaneousEqnSolver(RollerDistance,HingeDistance,(0-Moment),1,1,(0-FY));
         double RollerReaction = ReactionValues[0];
         double HingeReactionFY = ReactionValues[1];
         double HingeReactionFX = 0 - FX;
@@ -659,7 +834,7 @@ class OptimizedResultant
         double Roller2Distance = Roller2Values[0];
         double Roller2Orientation = Roller2Values[1];
         
-        double[] ReactionValues = SimultaneusEqnSolver(Roller1Distance,Roller2Distance,(0-Moment),1,1,(0-FY));
+        double[] ReactionValues = simultaneousEqnSolver(Roller1Distance,Roller2Distance,(0-Moment),1,1,(0-FY));
         double Roller1Reaction = ReactionValues[0];
         double Roller2Reaction = ReactionValues[1];
 
@@ -680,13 +855,13 @@ class OptimizedResultant
         double Hinge2Distance = Hinge2Values[0];
         double Hinge2Orientation = Hinge1Values[1];
 
-        double[] ReactionValues = SimultaneusEqnSolver(Hinge1Distance,Hinge2Distance,(0-Moment),1,1,(0-FY));
+        double[] ReactionValues = simultaneousEqnSolver(Hinge1Distance,Hinge2Distance,(0-Moment),1,1,(0-FY));
         double Hinge1Reaction = ReactionValues[0];
         double Hinge2Reaction = ReactionValues[1];
 
         System.out.println("Hinge 1 Reaction : " + Hinge1Reaction+ " N");
         System.out.println("Hinge 2 Reaction : " + Hinge2Reaction+ " N");
-        System.out.println("\"Aproxx Values\"");
+        System.out.println("\"Approx Values\"");
 
     }
     public static double[] InputJoint(String name)
@@ -697,33 +872,33 @@ class OptimizedResultant
         switch(name)
         {
             case "Roller":  
-            System.out.println("Enter the Distance of the Roller from the Refrence Point");
-            System.out.println("Enter 0 if it is refernce point");
+            System.out.println("Enter the Distance of the Roller from the reference Point");
+            System.out.println("Enter 0 if it is reference point");
             distance = sc.nextDouble() ;
             System.out.println("Select the orientation of moment caused by the joint");
             System.out.println("1. Anti-Clockwise");
             System.out.println("2.Clockwise");
-            System.out.println("0. If joint is at refrence point");
+            System.out.println("0. If joint is at reference point");
             orientation = sc.nextDouble();
             break;
             case "Hinge":
-            System.out.println("Enter the Distance of the Hinge from the Refrence Point");
-            System.out.println("Enter 0 if it is refernce point");
+            System.out.println("Enter the Distance of the Hinge from the reference Point");
+            System.out.println("Enter 0 if it is reference point");
             distance = sc.nextDouble() ;
             System.out.println("Select the orientation of moment caused by the joint");
             System.out.println("1. Anti-Clockwise");
             System.out.println("2.Clockwise");
-            System.out.println("0. If joint is at refrence point");
+            System.out.println("0. If joint is at reference point");
             orientation = sc.nextDouble();
             break;
             case "Fixed":
-            System.out.println("Enter the Distance of the Fixed from the Refrence Point");
-            System.out.println("Enter 0 if it is refernce point");  
+            System.out.println("Enter the Distance of the Fixed from the reference Point");
+            System.out.println("Enter 0 if it is reference point");  
             distance = sc.nextDouble() ;
             System.out.println("Select the orientation of moment caused by the joint");
             System.out.println("1. Anti-Clockwise");
             System.out.println("2.Clockwise");
-            System.out.println("0. If joint is at refrence point");
+            System.out.println("0. If joint is at reference point");
             orientation = sc.nextDouble();
             break;
             default:
@@ -752,7 +927,7 @@ class OptimizedResultant
             System.out.println("Select the type of load");
             System.out.println("1 for Point Load");
             System.out.println("2 for Uniform Distributed Load");
-            System.out.println("3 for Uniformly Varrying Load");
+            System.out.println("3 for Uniformly Varying Load");
             System.out.println("4 for Combined UDL and UVL");
             int choice = sc.nextInt();
             double magnitude;
@@ -766,7 +941,7 @@ class OptimizedResultant
                 case 1:
                 System.out.println("Enter the magnitude of the Point Load");
                 Load[i] = sc.nextDouble();
-                System.out.println("Enter the distance from the refrence point");
+                System.out.println("Enter the distance from the reference point");
                 Distance[i]= sc.nextDouble();
                 System.out.println("Choose the direction of Potential Moment");
                 System.out.println("1: Anticlockwise");
@@ -779,7 +954,7 @@ class OptimizedResultant
                 magnitude = sc.nextDouble();
                 System.out.println("Enter the length of applied Load");
                 length = sc.nextDouble();
-                System.out.println("Enter the distance of the closer side from the refrence point");
+                System.out.println("Enter the distance of the closer side from the reference point");
                 distance = sc.nextDouble();
                 System.out.println("Choose the direction of Potential Moment");
                 System.out.println("1: Anticlockwise");
@@ -791,14 +966,14 @@ class OptimizedResultant
 
                 case 3:
                 System.out.println("Choose the orientation of the UVL");
-                System.out.println("1: Slanted toward the refrence point");
-                System.out.println("2: Slanted away from thr refrence point");
+                System.out.println("1: Slanted toward the reference point");
+                System.out.println("2: Slanted away from thr reference point");
                 orientation = sc.nextInt();
                 System.out.println("Enter the magnitude of the Load");
                 magnitude = sc.nextDouble();
                 System.out.println("Enter the length of applied Load");
                 length = sc.nextDouble();
-                System.out.println("Enter the distance of the closer side from the refrence point");
+                System.out.println("Enter the distance of the closer side from the reference point");
                 distance = sc.nextDouble();
                 System.out.println("Choose the direction of Potential Moment");
                 System.out.println("1: Anticlockwise");
@@ -817,8 +992,8 @@ class OptimizedResultant
 
                 case 4:
                 System.out.println("Choose the orientation of the UVL");
-                System.out.println("1: Slanted toward the refrence point");
-                System.out.println("2: Slanted away from thr refrence point");
+                System.out.println("1: Slanted toward the reference point");
+                System.out.println("2: Slanted away from thr reference point");
                 orientation = sc.nextInt();
                 System.out.println("Enter the smaller magnitude of the Load");
                 smallermagnitude = sc.nextDouble();
@@ -826,7 +1001,7 @@ class OptimizedResultant
                 biggermagnitude = sc.nextDouble();
                 System.out.println("Enter the length of applied Load");
                 length = sc.nextDouble();
-                System.out.println("Enter the distance of the closer side from the refrence point");
+                System.out.println("Enter the distance of the closer side from the reference point");
                 distance = sc.nextDouble();
                 System.out.println("Choose the direction of Potential Moment");
                 System.out.println("1: Anticlockwise");
