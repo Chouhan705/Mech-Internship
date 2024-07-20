@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.*;
 import java.text.*;
 
-class JavaAll
+class OptimizedResultant
 {
     
     public static void main(String args[])
@@ -198,7 +198,7 @@ class JavaAll
     public static double InputMagnitude()
     {
         Scanner sc = new Scanner(System.in) ;
-        System.out.println("Enter ther magnitude of force :");
+        System.out.println("Enter the magnitude of force :");
         double magnitude = sc.nextDouble() ;
         return magnitude ;
     }
@@ -607,7 +607,14 @@ class JavaAll
                 {
                     angle = (3*Math.PI)/2 ;
                 }
-            }
+                if(direction == 3)
+                {
+                    angle = 0;  
+                }
+                if(direction == 4)
+                {
+                    angle = Math.PI ;
+                }
             FX += CalcFX(magnitude , angle);
             FY += CalcFY(magnitude , angle);
 
@@ -617,8 +624,9 @@ class JavaAll
             System.out.println("1. Anti-clockwise");
             System.out.println("2. Clockwise");
             System.out.println("0. If the Force is passing through the point");
-            int direction = sc.nextInt() ;
+            direction = sc.nextInt() ;
             Moment += CalcMoment(magnitude , distance , direction);
+            }
         }
         double[] Finalvalues = new double[3];
         Finalvalues[0] = FX ;
@@ -694,6 +702,14 @@ class JavaAll
                 {
                     angle = (3*Math.PI)/2 ;
                 }
+                if(direction == 3)
+                {
+                    angle = 0;  
+                }
+                if(direction == 4)
+                {
+                    angle = Math.PI ;
+                }
                 System.out.println("Enter the Perpendicular Distance from the Reference Point");
                 System.out.println("[0 If the force is passing through the point]");
                 distance = sc.nextDouble() ;
@@ -704,7 +720,7 @@ class JavaAll
             System.out.println("1. Anti-clockwise");
             System.out.println("2. Clockwise");
             System.out.println("0. If the force is passing through the point");
-            int direction = sc.nextInt();
+            direction = sc.nextInt();
             Moment += CalcMoment(magnitude, distance, direction);
         }
         double[] Finalvalues = new double[3];
