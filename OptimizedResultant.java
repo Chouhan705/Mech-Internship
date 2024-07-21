@@ -151,7 +151,7 @@ class OptimizedResultant
         for( int i = 0 ; i < n ; i++)
         {
             System.out.println("\033[H\033[2J");
-            System.out.println("Enter the information of force" + (i+1));
+            System.out.println("Enter the information of Force " + (i+1));
             int quadrant = InputQuadrant();
             double magnitude = InputMagnitude();            
             System.out.println("Select A for angle or S for slope");
@@ -598,6 +598,8 @@ class OptimizedResultant
                 System.out.println("Choose the orientation of the force");
                 System.out.println("1. Upwards");
                 System.out.println("2. Downwards");
+                System.out.println("3. Rightwards");
+                System.out.println("4. Leftwards");
                 int direction = sc.nextInt();
                 if(direction == 1)
                 {
@@ -797,7 +799,7 @@ class OptimizedResultant
         System.out.println("Choose the System of Joints");
         System.out.println("1. Roller and Hinge");
         System.out.println("2. 2 Roller");
-        System.out.println("3. 2 Hinge");
+        System.out.println("3. 2 Hinge [also works for 1 hinge and an inclined roller]");
         int system = sc.nextInt();
         switch(system)
         {
@@ -878,7 +880,28 @@ class OptimizedResultant
         System.out.println("Hinge 1 Reaction : " + Hinge1Reaction+ " N");
         System.out.println("Hinge 2 Reaction : " + Hinge2Reaction+ " N");
         System.out.println("\"Approx Values\"");
-
+        System.out.println("IF USED FOR INCLINED ROLLER ENTER 1");
+        int inclinedRoller = sc.nextInt();
+        if(inclinedRoller == 1)
+        {
+            System.out.println("Select the hinge used as the inclined roller");
+            System.out.println("1. Hinge 1");
+            System.out.println("2. Hinge 2");
+            int hinge = sc.nextInt();
+            double roller= 0;
+            if(hinge == 1)
+            {
+                roller = Hinge1Reaction;
+            }
+            if(hinge == 2)
+            {
+                roller = Hinge2Reaction;
+            }
+            System.out.println("Enter the angle of inclination with the positive y-axis");
+            double angle = sc.nextDouble();
+            roller = roller *Math.cos(angle);
+            System.out.println("Roller Reaction : " + roller + " N");
+        }
     }
     public static double[] InputJoint(String name)
     {
