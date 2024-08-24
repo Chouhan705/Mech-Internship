@@ -1795,9 +1795,9 @@ class JavaEverything
       else
       {
         WorkDone = mass*g*h + 0.5*k*(Math.pow(x1, 2) - Math.pow(x2, 2));
+      }
         FinalVelocity = Math.sqrt(2*WorkDone/mass);
         System.out.println("The final velocity is "+(FinalVelocity)+ "m/s");
-      }
     }
 }
 
